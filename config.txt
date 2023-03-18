@@ -1,0 +1,6 @@
+maxTitleLength|100
+maxContentLength|10000
+maxDateLength|16
+maxMessageLength|100
+color|15
+language|0

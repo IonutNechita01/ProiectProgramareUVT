@@ -1,0 +1,23 @@
+# depslib dependency file v1.0
+1678646623 source:e:\nechita ionut\codeblocks_programs\proiectprogramare\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<stdint.h>
+	<conio.h>
+	<ctype.h>
+	<stdbool.h>
+
+1679144036 source:e:\nechitaionut\codeblocks_programs\proiectprogramare\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<stdint.h>
+	<ctype.h>
+	<stdbool.h>
+	<time.h>
+	<windows.h>
+	<conio.h>
+	<termios.h>
+	<unistd.h>
+

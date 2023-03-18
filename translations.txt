@@ -1,0 +1,50 @@
+firstMenuIndication|Use w and s to navigate, press e to select|Foloseste w si s pentru a naviga, apasa e pentru a selecta actiunea dorita
+firstMenuTitle|Note App|Aplicatie Notite
+deleteNoteActionTitle|Delete note|Stergeti notita
+deleteNoteActionIndication|Select note to delete, Select 'back' to go back | Selectati notita pentru a o sterge, Selectati 'inapoi' pentru a reveni inapoi
+editNoteActionTitle|Edit note | Editati notita
+editNoteActionIndication|Select note to edit, Select 'back' to go back | Selectati notita pentru a o edita, Selectati 'inapoi' pentru a reveni inapoi
+settingsActionTitle|Settings|Setari
+settingActionIndication|From here you can change the color of the app and the language|De aici poti schimba culoarea si limba aplicatiei
+changeLanguageActionTitle|Change Language|Schimba Limba
+changeLanguageActionIndication|Please select a language|Te rog selecteaza o limba
+changeColorActionTitle|Change Color|Schimba Culoarea
+changeColorActionIndication||Please select a color|Te rog selecteaza o culoare
+getDateActionTitle|Choose date option|Alege o optiune pentru data
+getDateActionIndication|Select 'Add date' to add date manually or 'Get system date' to get system date|Selectati 'Adaugati data' pentru a adauga manual data sau 'Obtineti data sistemului' pentru a obtine data sistemului
+getInputDate|Enter date in format dd/mm/yyyy hh:mm:|introdu data in urmatorul format zz/ll/aaaa hh:mm:
+getInputNoteTitle|Enter note title:|Introdu titlu notitei:
+getInputNoteContent|Enter note content:|Introdu continut notitei:
+getInputNewNoteTitle|Enter new title:|Introdu noul titlu:
+getInputNewNoteContent|Enter new content|Introdu noul continut
+getInputNewNoteDate|Enter new date in format dd/mm/yyyy hh:mm:|introdu noua data in urmatorul format zz/ll/aaaa hh:mm:
+noteAddedSuccessfully|Note added successfully|Notita adaugata cu succes
+noteEditedSuccessfully|Note edited successfully|Notita editata cu succes
+colorChangedSuccessfully|Color changed successfully|Culoarea schimbata cu succes
+currentTitle|Current title: #value (enter a new value or press enter to continue)|Titlul curent: #value (introdu un nou titlu sau apasa enter pentru a continua)
+currentContent|Current content: #value (enter a new value or press enter to continue)|Continutul curent: #value (introdu un nou continut sau apasa enter pentru a continua)
+currentDate|Current date: #value (enter a new value or press enter to continue)|Data curenta: #value (introdu o noua data sau apasa enter pentru a continua)
+invalidInput|Invalid input|Input invalid
+noNotesFound|No notes found|Nu s-au gasit notite
+noteInfo|Note info|Informatii notita
+title|Title: #value|Titlu #value
+content|Content: #value|Continut #value
+dateInfo|Date info|Informatii data
+date|Date #value|Data #value
+time|Time #value|ora #value
+addDateFunction|Add date|Adaugati data
+getSystemDateFunction|Get system date|Obtineti data sistemului
+back|Back|Inapoi
+addNoteAction|Add note|Adaugati notita
+editNoteAction|Edit note|Editati notita
+deleteNoteAction|Delete note|Stergeti notita
+settingsAction|Settings|Setari
+viewNotes|View notes|Vizualizati notitele
+exit|Exit|Iesire
+12|Red|Rosu
+9|Blue|Albastru
+10|Green|Verde
+14|Yellow|Galben
+15|White|Alb
+0|English|Engleza
+1|Romanian|Romana
