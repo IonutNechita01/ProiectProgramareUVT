@@ -874,18 +874,16 @@ void deleteNoteAction()
 
 bool stayInMenu(char *key)
 {
-    if (strstr(key, "Action") != NULL)
-    {
-        return true;
-    }
-    return false;
+    return strstr(key, "Action") != NULL;
+    //modified without testing
+    //TODO: test
 }
 
 void showMenu(struct MenuItem **menuItems, char *titleTranslationKey, char *instructionsTranslationKey)
 {
     static int selectedItem;
     int menuItemsCount = getMenuItemCount(menuItems);
-    char *title = getTranslation(titleTranslationKey, false);
+    char *title = getTranslation(titleTranslationKey, true);
     char *instructions = getTranslation(instructionsTranslationKey, false);
     if (selectedItem > menuItemsCount - 1)
     {
@@ -896,28 +894,15 @@ void showMenu(struct MenuItem **menuItems, char *titleTranslationKey, char *inst
         selectedItem = menuItemsCount - 1;
     }
     CLEAR_SCREEN();
-    if (title != NULL)
-    {
-        printf("---- %s ----\n", title);
-    }
+    title != NULL ? printf("---- %s ----", title) : printf("---- %s ----", getTranslation("firstMenuTitle", true));
     for (int index = 0; index < menuItemsCount; index++)
     {
         if (menuItems[index]->getTranslation)
             menuItems[index]->title = getTranslation(menuItems[index]->key, false);
-        if (index == selectedItem)
-        {
-            printf(" >> %s << \n", menuItems[index]->title);
-        }
-        else
-        {
-            printf(" > %s < \n", menuItems[index]->title);
-        }
+        index == selectedItem ? printf(" >> %s << \n", menuItems[index]->title) : printf(" > %s < \n", menuItems[index]->title);
     }
-    if (instructions != NULL)
-    {
-        printf("\n%s", instructions);
-        handleMenuInput(menuItems, &selectedItem, menuItems[selectedItem]->action, titleTranslationKey, instructionsTranslationKey);
-    }
+    instructions != NULL ? printf("%s", instructions) : printf("%s", getTranslation("firstMenuIndication", false));
+    handleMenuInput(menuItems, &selectedItem, menuItems[selectedItem]->action, titleTranslationKey, instructionsTranslationKey);
 }
 
 void handleMenuInput(struct MenuItem **menuItems, int *selectedItem, void (*action)(void *data), char *title, char *instructions)
@@ -944,9 +929,7 @@ void handleMenuInput(struct MenuItem **menuItems, int *selectedItem, void (*acti
                 *selectedItem = 0;
                 action(menuItems[itemIndex]->key);
                 *selectedItem = itemIndex;
-                if (stayInMenu(menuItems[itemIndex]->key))
-                    break;
-                return;
+                stayInMenu(menuItems[itemIndex]->key) ? break : return;
             }
         }
     }
@@ -1210,7 +1193,7 @@ void initTranslations()
     while (getline(&line, &len, file) != -1)
     {
         char *key = strtok(line, "|");
-        if (config->language == ROMANIAN)
+        for (int i = 0; i < config->language; i++)
         {
             strtok(NULL, "|");
         }
