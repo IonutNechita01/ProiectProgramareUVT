@@ -1,5 +1,5 @@
 maxTitleLength|100
-maxContentLength|10000
+maxContentLength|1000
 maxDateLength|16
 maxMessageLength|100
 color|15
