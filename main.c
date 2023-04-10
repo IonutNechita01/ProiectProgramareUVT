@@ -5,10 +5,10 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <time.h>
-#include <windows.h>
 
 #ifdef _WIN32
 #include <conio.h>
+#include <windows.h>
 #define CLEAR_SCREEN() system("cls")
 #define PAUSE() system("pause")
 #define GET_KEY() getch()
@@ -68,7 +68,9 @@ struct Config
     enum appLanguage
     {
         ENGLISH,
-        ROMANIAN
+        ROMANIAN,
+        SPANISH,
+        LAST_ELEMENT
     } language;
     enum appColor
     {
@@ -130,6 +132,17 @@ void restartCurrentStateNote()
     free(currentStateNote->content);
     free(currentStateNote);
     currentStateNote = NULL;
+}
+
+void freeMenuItems(struct MenuItem **menuItems)
+{
+    int count = getMenuItemCount(menuItems);
+    for (int i = 0; i < count; i++)
+    {
+        free(menuItems[i]->key);
+        free(menuItems[i]);
+    }
+    free(menuItems);
 }
 
 int getFileSize(FILE *file)
@@ -376,6 +389,7 @@ void getDateAction()
     menuItem[1]->getTranslation = true;
     menuItem[2] = NULL;
     showMenu(menuItem, "getDateActionTitle", "getDateActionIndication");
+    
 }
 
 void addNoteAction()
@@ -467,11 +481,8 @@ void editNote(void *key)
             newValue = getInput(getTranslation("getInputNewNoteDate", true), dateValidator, true);
             if (newValue != NULL)
             {
-
-                char *date = malloc(sizeof(char *) * strlen(newValue));
-                date = newValue;
                 struct Date *newDate = malloc(sizeof(struct Date));
-                parseDate(date, newDate);
+                parseDate((char *)newValue, newDate);
                 currentNoteNode->note->date.day = newDate->day;
                 currentNoteNode->note->date.month = newDate->month;
                 currentNoteNode->note->date.year = newDate->year;
@@ -724,33 +735,29 @@ void changeColorAction()
 
 void changeLanguageAction()
 {
-    struct MenuItem **menuItems = malloc(sizeof(struct MenuItem *) * 4);
-
-    struct MenuItem *englishMenuItem = malloc(sizeof(struct MenuItem));
-    englishMenuItem->title = NULL;
-    englishMenuItem->key = "0";
-    englishMenuItem->action = changeLanguage;
-    englishMenuItem->getTranslation = true;
-    menuItems[0] = englishMenuItem;
-
-    struct MenuItem *romanianMenuItem = malloc(sizeof(struct MenuItem));
-    romanianMenuItem->title = NULL;
-    romanianMenuItem->key = "1";
-    romanianMenuItem->action = changeLanguage;
-    romanianMenuItem->getTranslation = true;
-    menuItems[1] = romanianMenuItem;
-
+    struct MenuItem **menuItems = malloc(sizeof(struct MenuItem *) * (LAST_ELEMENT + 2));
+    for (int i = 0; i < LAST_ELEMENT; i++)
+    {
+        struct MenuItem *languageMenuItem = malloc(sizeof(struct MenuItem));
+        languageMenuItem->title = "Language";
+        char* key = malloc(sizeof(char) * 2);
+        sprintf(key, "%d", i);
+        languageMenuItem->key = key;
+        languageMenuItem->action = changeLanguage;
+        languageMenuItem->getTranslation = true;
+        menuItems[i] = languageMenuItem;
+    }
     struct MenuItem *backMenuItem = malloc(sizeof(struct MenuItem));
     backMenuItem->title = NULL;
     backMenuItem->key = "back";
     backMenuItem->action = back;
     backMenuItem->getTranslation = true;
-    menuItems[2] = backMenuItem;
-
-    menuItems[3] = NULL;
+    menuItems[LAST_ELEMENT] = backMenuItem;
+    menuItems[LAST_ELEMENT + 1] = NULL;
 
     showMenu(menuItems, "changeLanguageActionTitle", "changeLanguageActionIndication");
 }
+
 
 void changeColor(void *color)
 {
@@ -772,7 +779,11 @@ void changeLanguage(void *language)
     case 1:
         config->language = ROMANIAN;
         break;
+    case 2:
+        config->language = SPANISH;
+        break;
     default:
+        config->language = ENGLISH;
         break;
     }
     saveConfig();
@@ -875,15 +886,15 @@ void deleteNoteAction()
 bool stayInMenu(char *key)
 {
     return strstr(key, "Action") != NULL;
-    //modified without testing
-    //TODO: test
+    // modified without testing
+    // TODO: test
 }
 
 void showMenu(struct MenuItem **menuItems, char *titleTranslationKey, char *instructionsTranslationKey)
 {
     static int selectedItem;
     int menuItemsCount = getMenuItemCount(menuItems);
-    char *title = getTranslation(titleTranslationKey, true);
+    char *title = getTranslation(titleTranslationKey, false);
     char *instructions = getTranslation(instructionsTranslationKey, false);
     if (selectedItem > menuItemsCount - 1)
     {
@@ -894,7 +905,7 @@ void showMenu(struct MenuItem **menuItems, char *titleTranslationKey, char *inst
         selectedItem = menuItemsCount - 1;
     }
     CLEAR_SCREEN();
-    title != NULL ? printf("---- %s ----", title) : printf("---- %s ----", getTranslation("firstMenuTitle", true));
+    title != NULL ? printf("---- %s ----\n", title) : printf("---- %s ----\n", getTranslation("firstMenuTitle", false));
     for (int index = 0; index < menuItemsCount; index++)
     {
         if (menuItems[index]->getTranslation)
@@ -909,27 +920,32 @@ void handleMenuInput(struct MenuItem **menuItems, int *selectedItem, void (*acti
 {
     while (1)
     {
-        if (_kbhit())
+        char input;
+        input = GET_KEY();
+        if (input == 'w' || input == 'W')
         {
-            char input;
-            input = GET_KEY();
-            if (input == 'w' || input == 'W')
+            *selectedItem -= 1;
+            break;
+        }
+        if (input == 's' || input == 'S')
+        {
+            *selectedItem += 1;
+            break;
+        }
+        if (input == 'e' || input == 'E')
+        {
+            int itemIndex = *selectedItem;
+            *selectedItem = 0;
+            action(menuItems[itemIndex]->key);
+            *selectedItem = itemIndex;
+            if (stayInMenu(menuItems[itemIndex]->key))
             {
-                *selectedItem -= 1;
                 break;
             }
-            if (input == 's' || input == 'S')
+            else
             {
-                *selectedItem += 1;
-                break;
-            }
-            if (input == 'e' || input == 'E')
-            {
-                int itemIndex = *selectedItem;
-                *selectedItem = 0;
-                action(menuItems[itemIndex]->key);
-                *selectedItem = itemIndex;
-                stayInMenu(menuItems[itemIndex]->key) ? break : return;
+                return;
+                freeMenuItems(menuItems);
             }
         }
     }
