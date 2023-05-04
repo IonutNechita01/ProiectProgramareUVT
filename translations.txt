@@ -49,3 +49,4 @@ exit|Exit|Iesire|Salir
 0|English|Engleza|Ingles
 1|Romanian|Romana|Rumano
 2|Spanish|Spaniola|Espanol
+viewNotesByDate|View notes by date|Vizualizati notitele dupa data|Ver notas por fecha

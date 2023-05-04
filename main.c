@@ -228,7 +228,7 @@ const char *dateValidator(void *input)
         return "Invalid date format: must be in format dd.mm.yyyy hh:mm!";
     }
 
-    if (sscanf(date, "%d.%d.%d %d:%d", &day, &month, &year, &hour, &minute) != 5)
+    if (sscanf(date, "%d/%d/%d %d:%d", &day, &month, &year, &hour, &minute) != 5)
     {
         return "Invalid date format: must be in format dd.mm.yyyy hh:mm!";
     }
@@ -389,7 +389,7 @@ void getDateAction()
     menuItem[1]->getTranslation = true;
     menuItem[2] = NULL;
     showMenu(menuItem, "getDateActionTitle", "getDateActionIndication");
-    
+
 }
 
 void addNoteAction()
@@ -588,6 +588,38 @@ void *getInput(char *message, const char *(validator)(void *), bool canBeEmpty)
     }
     free(message);
     return input;
+}
+
+void viewNotesByDate() {
+    CLEAR_SCREEN();
+    struct Date *date = malloc(sizeof(struct Date));
+    char *input = getInput(getTranslation("getInputDate", true), dateValidator, false);
+    parseDate(input, date);
+    CLEAR_SCREEN();
+    const struct NoteNode *currentNoteNode = notesList;
+    if (currentNoteNode == NULL)
+    {
+        printf("%s", getTranslation("noNotesFound", true));
+        PAUSE();
+        return;
+    }
+    while (currentNoteNode != NULL)
+    {
+        if (currentNoteNode == notesList)
+            printf("______________________________________________________\n");
+        if (currentNoteNode->note->date.day == date->day && currentNoteNode->note->date.month == date->month && currentNoteNode->note->date.year == date->year)
+        {
+            printf("-%s", getTranslation("noteInfo", true));
+            printf("      -%s", addDynamicValueToString(getTranslation("title", true), currentNoteNode->note->title));
+            printf("      -%s", getTranslation("dateInfo", true));
+            printf("         -%s", addDynamicValueToString(getTranslation("date", true), formatDate(currentNoteNode->note->date.day, currentNoteNode->note->date.month, currentNoteNode->note->date.year)));
+            printf("         -%s", addDynamicValueToString(getTranslation("time", true), formatTime(currentNoteNode->note->date.hour, currentNoteNode->note->date.minute)));
+            printf("______________________________________________________\n");
+        }
+        currentNoteNode = currentNoteNode->next;
+    }
+    free(date);
+    PAUSE();
 }
 
 void viewNotes()
@@ -982,21 +1014,28 @@ void initializeFirstItems(struct MenuItem **menuItems)
     viewNotesMenuItem->getTranslation = true;
     menuItems[3] = viewNotesMenuItem;
 
+    struct MenuItem *viewNotesMenuItemByDate = malloc(sizeof(struct MenuItem));
+    viewNotesMenuItemByDate->key = "viewNotesByDate";
+    viewNotesMenuItemByDate->title = NULL;
+    viewNotesMenuItemByDate->action = viewNotesByDate;
+    viewNotesMenuItemByDate->getTranslation = true;
+    menuItems[4] = viewNotesMenuItemByDate;
+
     struct MenuItem *settingsMenuItem = malloc(sizeof(struct MenuItem));
     settingsMenuItem->key = "settingsAction";
     settingsMenuItem->title = NULL;
     settingsMenuItem->action = settingsAction;
     settingsMenuItem->getTranslation = true;
-    menuItems[4] = settingsMenuItem;
+    menuItems[5] = settingsMenuItem;
 
     struct MenuItem *exitMenuItem = malloc(sizeof(struct MenuItem));
     exitMenuItem->key = "exit";
     exitMenuItem->title = NULL;
     exitMenuItem->action = exitApp;
     exitMenuItem->getTranslation = true;
-    menuItems[5] = exitMenuItem;
+    menuItems[6] = exitMenuItem;
 
-    menuItems[6] = NULL;
+    menuItems[7] = NULL;
 }
 
 void initializeNotesList()
@@ -1236,9 +1275,9 @@ int main()
     initConfig();
     initTranslations();
     initializeNotesList();
-    struct MenuItem **firstMenuItems = malloc(sizeof(struct MenuItem *) * 7);
+    struct MenuItem **firstMenuItems = malloc(sizeof(struct MenuItem *) * 8);
     initializeFirstItems(firstMenuItems);
-    while (1)
+    while (TRUE)
     {
         showMenu(firstMenuItems, "firstMenuTitle", "firstMenuIndication");
     }
